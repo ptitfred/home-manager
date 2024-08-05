@@ -40,6 +40,8 @@
     let
       system = "x86_64-linux";
 
+      mkRxvt = self: self.callPackage pkgs/rxvt-truecolor.nix { inherit nixpkgs; };
+
       overlay = self: previous: {
         # 22.11 still available when needed
         previous = inputs.previous.legacyPackages.${system};
@@ -52,6 +54,7 @@
         tmuxPlugins = previous.tmuxPlugins // {
           power-theme = previous.tmuxPlugins.power-theme.overrideAttrs (_: { src = inputs.power-theme; });
         };
+        rxvt-unicode-emoji-truecolor = mkRxvt self;
       };
 
       pkgs = import nixpkgs { inherit system; };
@@ -99,6 +102,7 @@
               toggle-redshift    = pkgs.callPackage home/desktop/toggle-redshift.nix {};
               focus-by-classname = pkgs.callPackage home/desktop/focus-by-classname  {};
               aeroplane-mode     = pkgs.callPackage home/desktop/aeroplane-mode      {};
+              rxvt-unicode-emoji-truecolor = mkRxvt pkgs;
             };
          in tools // {
               default = pkgs.linkFarm "tools" tools;
